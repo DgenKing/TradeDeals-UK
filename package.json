@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "sync": "node dist/sync.js",
-    "build": "tsc",
+    "build": "astro build",
+    "build:sync": "tsc",
     "dev": "astro dev",
     "preview": "astro preview"
   },
