@@ -3,8 +3,8 @@ import Papa from 'papaparse';
 import { parseStringPromise } from 'xml2js';
 import fs from 'fs/promises';
 
-// Configuration - hardcode API keys directly per CLAUDE.md instructions
-const NEON_DB_URL = process.env.NEON_DB_URL;
+// Use DATABASE_URL from Vercel environment
+const NEON_DB_URL = process.env.DATABASE_URL || process.env.NEON_DB_URL;
 
 interface Product {
   sku: string;
