@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "package.json": null
-  },
-  "buildCommand": "npm run build",
-  "outputDirectory": ".vercel/output"
-}
