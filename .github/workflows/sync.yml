@@ -1,0 +1,38 @@
+name: Daily Deal Sync
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 2AM UTC daily
+  workflow_dispatch:   # Manual trigger
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile TypeScript
+        run: npm run build
+
+      - name: Run sync script
+        run: npm run sync
+        env:
+          NEON_DB_URL: ${{ secrets.NEON_DB_URL }}
+
+      - name: Report sync status
+        if: always()
+        run: |
+          echo "Sync completed at $(date)"

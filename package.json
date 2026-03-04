@@ -1,0 +1,28 @@
+{
+  "name": "trade-deals-uk",
+  "version": "1.0.0",
+  "description": "UK Trade Deals & Price Comparison Engine",
+  "type": "module",
+  "scripts": {
+    "sync": "node dist/sync.js",
+    "build": "tsc",
+    "dev": "astro dev",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^9.0.4",
+    "@neondatabase/serverless": "^0.9.0",
+    "dotenv": "^16.4.5",
+    "papaparse": "^5.4.1",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "@astrojs/tailwind": "^6.0.2",
+    "@types/node": "^20.11.19",
+    "@types/papaparse": "^5.3.14",
+    "@types/xml2js": "^0.4.14",
+    "astro": "^5.18.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3"
+  }
+}
