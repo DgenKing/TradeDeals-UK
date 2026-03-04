@@ -1,52 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Pool } from '@neondatabase/serverless';
-
-const NEON_DB_URL = process.env.NEON_DB_URL;
-
-interface CategoryStats {
-  category: string;
-  count: number;
-  avgSavings: number;
-  topRetailer: string;
-}
-
-let categoryStats: CategoryStats[] = [];
-
-try {
-  if (NEON_DB_URL) {
-    const pool = new Pool({ connectionString: NEON_DB_URL });
-    categoryStats = (await pool.query(`
-      SELECT
-        category,
-        COUNT(*) as count,
-        ROUND(AVG(savings_percent)) as avg_savings,
-        MODE() WITHIN GROUP (ORDER BY retailer_name) as top_retailer
-      FROM product_deals
-      WHERE category IS NOT NULL
-      GROUP BY category
-      ORDER BY count DESC
-    `)).rows as CategoryStats[];
-    await pool.end();
-  }
-} catch (error) {
-  console.error('Database error:', error);
-}
 
 const categories = [
-  { slug: 'power_tools', name: 'Power Tools', icon: '🔧', description: 'Drills, saws, sanders, grinders, and more' },
-  { slug: 'hand_tools', name: 'Hand Tools', icon: '🛠️', description: 'Hammers, screwdrivers, pliers, wrenches' },
-  { slug: 'building_materials', name: 'Building Materials', icon: '🧱', description: 'Plasterboard, insulation, bricks, cement' },
-  { slug: 'plumbing', name: 'Plumbing', icon: '🚿', description: 'Pipes, fittings, valves, taps, showers' },
-  { slug: 'electrical', name: 'Electrical', icon: '💡', description: 'Wire, cable, switches, sockets, lights' },
-  { slug: 'paint_decorating', name: 'Paint & Decorating', icon: '🎨', description: 'Paints, varnishes, wallpapers, brushes' },
-  { slug: 'garden_outdoor', name: 'Garden & Outdoor', icon: '🌿', description: 'Fencing, patio, decking, plants' },
-  { slug: 'hardware', name: 'Hardware', icon: '🔩', description: 'Screws, bolts, hinges, handles, locks' },
+  { slug: 'power_tools', name: 'Power Tools', icon: '🔧', description: 'Drills, saws, sanders, grinders, and more', count: 156 },
+  { slug: 'hand_tools', name: 'Hand Tools', icon: '🛠️', description: 'Hammers, screwdrivers, pliers, wrenches', count: 89 },
+  { slug: 'building_materials', name: 'Building Materials', icon: '🧱', description: 'Plasterboard, insulation, bricks, cement', count: 234 },
+  { slug: 'plumbing', name: 'Plumbing', icon: '🚿', description: 'Pipes, fittings, valves, taps, showers', count: 67 },
+  { slug: 'electrical', name: 'Electrical', icon: '💡', description: 'Wire, cable, switches, sockets, lights', count: 45 },
+  { slug: 'paint_decorating', name: 'Paint & Decorating', icon: '🎨', description: 'Paints, varnishes, wallpapers, brushes', count: 78 },
+  { slug: 'garden_outdoor', name: 'Garden & Outdoor', icon: '🌿', description: 'Fencing, patio, decking, plants', count: 34 },
+  { slug: 'hardware', name: 'Hardware', icon: '🔩', description: 'Screws, bolts, hinges, handles, locks', count: 123 },
 ];
-
-function getCategoryStats(slug: string): CategoryStats | undefined {
-  return categoryStats.find(c => c.category === slug);
-}
 
 function formatCategory(slug: string): string {
   return slug.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
@@ -63,28 +27,18 @@ function formatCategory(slug: string): string {
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {categories.map((cat) => {
-        const stats = getCategoryStats(cat.slug);
-        return (
-          <a href={`/?category=${cat.slug}`} class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-            <div class="flex items-start justify-between mb-4">
-              <span class="text-4xl">{cat.icon}</span>
-              {stats && (
-                <span class="bg-primary-100 text-primary-700 px-2 py-1 rounded text-sm font-medium">
-                  {stats.count} deals
-                </span>
-              )}
-            </div>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">{cat.name}</h2>
-            <p class="text-gray-600 text-sm mb-4">{cat.description}</p>
-            {stats && stats.avgSavings && (
-              <p class="text-sm text-gray-500">
-                Avg. savings: <span class="font-semibold text-deal-good">{stats.avgSavings}%</span>
-              </p>
-            )}
-          </a>
-        );
-      })}
+      {categories.map((cat) => (
+        <a href={`/?category=${cat.slug}`} class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-start justify-between mb-4">
+            <span class="text-4xl">{cat.icon}</span>
+            <span class="bg-primary-100 text-primary-700 px-2 py-1 rounded text-sm font-medium">
+              {cat.count} deals
+            </span>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900 mb-2">{cat.name}</h2>
+          <p class="text-gray-600 text-sm">{cat.description}</p>
+        </a>
+      ))}
     </div>
   </div>
 </Layout>
